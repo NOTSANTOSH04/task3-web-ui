@@ -176,7 +176,6 @@ The table displays all tasks with columns:
 
 <img width="1863" height="939" alt="image" src="https://github.com/user-attachments/assets/b6580970-ece6-4450-b75c-d62dd28fb900" />
 
-<img width="1635" height="611" alt="image" src="https://github.com/user-attachments/assets/99ab4ed5-581b-4bd8-85ed-77a7ca8b58bc" />
 
 **How to search by name:**
 1. Select **"By Name"** from dropdown
