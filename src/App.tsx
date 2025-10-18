@@ -16,21 +16,44 @@ const App: React.FC = () => {
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Header style={{ background: '#001529', padding: '0 50px' }}>
-        <Title level={3} style={{ color: 'white', margin: '16px 0' }}>
+      <Header style={{ 
+        background: '#001529', 
+        padding: '0 24px',
+        display: 'flex',
+        alignItems: 'center'
+      }}>
+        <Title 
+          level={3} 
+          style={{ 
+            color: 'white', 
+            margin: '16px 0',
+            fontSize: 'clamp(16px, 4vw, 24px)'
+          }}
+        >
           Task Manager - Kaiburr Assessment
         </Title>
       </Header>
       
-      <Content style={{ padding: '50px', background: '#f0f2f5' }}>
-        <div style={{ maxWidth: 1400, margin: '0 auto' }}>
+      <Content style={{ 
+        padding: '24px',
+        background: '#f0f2f5',
+        width: '100%',
+        maxWidth: '1600px',
+        margin: '0 auto'
+      }}>
+        <div style={{ width: '100%' }}>
           <TaskForm onTaskCreated={handleTaskCreated} />
           <Divider />
           <TaskList key={refreshKey} />
         </div>
       </Content>
       
-      <Footer style={{ textAlign: 'center', background: '#001529', color: 'white' }}>
+      <Footer style={{ 
+        textAlign: 'center', 
+        background: '#001529', 
+        color: 'white',
+        padding: '12px 24px'
+      }}>
         Task Manager Web UI ©2025 | Created by Santosh
       </Footer>
     </Layout>

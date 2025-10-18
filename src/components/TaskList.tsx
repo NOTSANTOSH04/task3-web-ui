@@ -8,7 +8,6 @@ import {
   Tag,
   Card,
   Input,
-  Select,
 } from 'antd';
 import {
   DeleteOutlined,
@@ -21,13 +20,10 @@ import { taskService } from '../services/taskService';
 import { Task } from '../types/task.types';
 import TaskDetails from './TaskDetails';
 
-const { Option } = Select;
-
 const TaskList: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState('');
-  const [searchType, setSearchType] = useState<'name' | 'id'>('name');
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [detailsVisible, setDetailsVisible] = useState(false);
 
@@ -56,24 +52,11 @@ const TaskList: React.FC = () => {
 
     setLoading(true);
     try {
-      if (searchType === 'id') {
-        // Search by ID
-        const task = await taskService.getTaskById(searchText);
-        setTasks([task]);
-        message.success('Task found!');
-      } else {
-        // Search by name
-        const data = await taskService.searchTasks(searchText);
-        setTasks(data);
-        message.success(`Found ${data.length} task(s)`);
-      }
+      const data = await taskService.searchTasks(searchText);
+      setTasks(data);
+      message.success(`Found ${data.length} task(s)`);
     } catch (error) {
-      if (searchType === 'id') {
-        message.error('Task not found');
-        setTasks([]);
-      } else {
-        message.error('Search failed');
-      }
+      message.error('Search failed');
       console.error(error);
     } finally {
       setLoading(false);
@@ -81,18 +64,42 @@ const TaskList: React.FC = () => {
   };
 
   const handleExecute = async (id: string) => {
-    setLoading(true);
-    try {
-      await taskService.executeTask(id);
-      message.success('Task executed successfully!');
-      loadTasks();
-    } catch (error) {
-      message.error('Failed to execute task');
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Find task name for better message
+  const task = tasks.find(t => t.id === id);
+  const taskName = task?.name || id;
+  
+  setLoading(true);
+  
+  // Show loading message
+  message.loading({
+    content: `Executing "${taskName}"...`,
+    key: 'executing',
+    duration: 0,
+  });
+  
+  try {
+    await taskService.executeTask(id);
+    
+    // Show success message
+    message.success({
+      content: `✓ Task "${taskName}" executed successfully!`,
+      key: 'executing',
+      duration: 3,
+    });
+    
+    loadTasks();
+  } catch (error) {
+    message.error({
+      content: 'Failed to execute task',
+      key: 'executing',
+      duration: 3,
+    });
+    console.error(error);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleDelete = async (id: string) => {
     try {
@@ -117,76 +124,87 @@ const TaskList: React.FC = () => {
   };
 
   const columns = [
-    {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      width: 120,
-    },
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: 'Owner',
-      dataIndex: 'owner',
-      key: 'owner',
-    },
-    {
-      title: 'Command',
-      dataIndex: 'command',
-      key: 'command',
-      ellipsis: true,
-    },
-    {
-      title: 'Executions',
-      key: 'executions',
-      render: (_: any, record: Task) => (
-        <Tag color={record.taskExecutions.length > 0 ? 'green' : 'default'}>
-          {record.taskExecutions.length}
-        </Tag>
-      ),
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      width: 250,
-      render: (_: any, record: Task) => (
-        <Space size="small">
+  {
+    title: 'ID',
+    dataIndex: 'id',
+    key: 'id',
+    width: 100,
+    fixed: 'left' as const, // Pin ID column
+    ellipsis: true,
+  },
+  {
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
+    width: 150,
+    ellipsis: true,
+  },
+  {
+    title: 'Owner',
+    dataIndex: 'owner',
+    key: 'owner',
+    width: 120,
+    ellipsis: true,
+  },
+  {
+    title: 'Command',
+    dataIndex: 'command',
+    key: 'command',
+    width: 200,
+    ellipsis: true,
+  },
+  {
+    title: 'Executions',
+    key: 'executions',
+    width: 100,
+    align: 'center' as const,
+    render: (_: any, record: Task) => (
+      <Tag color={record.taskExecutions.length > 0 ? 'green' : 'default'}>
+        {record.taskExecutions.length}
+      </Tag>
+    ),
+  },
+  {
+    title: 'Actions',
+    key: 'actions',
+    width: 280,
+    fixed: 'right' as const, // Pin actions column
+    render: (_: any, record: Task) => (
+      <Space size="small" wrap>
+        <Button
+          type="primary"
+          size="small"
+          icon={<PlayCircleOutlined />}
+          onClick={() => handleExecute(record.id)}
+        >
+          Execute
+        </Button>
+        <Button
+          size="small"
+          icon={<EyeOutlined />}
+          onClick={() => handleViewDetails(record.id)}
+        >
+          View
+        </Button>
+        <Popconfirm
+          title="Delete this task?"
+          onConfirm={() => handleDelete(record.id)}
+          okText="Yes"
+          cancelText="No"
+        >
           <Button
-            type="primary"
+            danger
             size="small"
-            icon={<PlayCircleOutlined />}
-            onClick={() => handleExecute(record.id)}
+            icon={<DeleteOutlined />}
           >
-            Execute
+            Delete
           </Button>
-          <Button
-            size="small"
-            icon={<EyeOutlined />}
-            onClick={() => handleViewDetails(record.id)}
-          >
-            View
-          </Button>
-          <Popconfirm
-            title="Delete this task?"
-            onConfirm={() => handleDelete(record.id)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <Button
-              danger
-              size="small"
-              icon={<DeleteOutlined />}
-            >
-              Delete
-            </Button>
-          </Popconfirm>
-        </Space>
-      ),
-    },
-  ];
+        </Popconfirm>
+      </Space>
+    ),
+  },
+];
+
 
   return (
     <>
@@ -203,16 +221,8 @@ const TaskList: React.FC = () => {
         }
       >
         <Space style={{ marginBottom: 16, width: '100%' }}>
-          <Select
-            value={searchType}
-            onChange={setSearchType}
-            style={{ width: 120 }}
-          >
-            <Option value="name">By Name</Option>
-            <Option value="id">By ID</Option>
-          </Select>
           <Input
-            placeholder={searchType === 'id' ? 'Enter task ID' : 'Enter task name'}
+            placeholder="Search tasks by name"
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
             onPressEnter={handleSearch}
@@ -227,13 +237,23 @@ const TaskList: React.FC = () => {
           </Button>
         </Space>
 
-        <Table
-          columns={columns}
-          dataSource={tasks}
-          rowKey="id"
-          loading={loading}
-          pagination={{ pageSize: 10 }}
-        />
+       <Table
+  columns={columns}
+  dataSource={tasks}
+  rowKey="id"
+  loading={loading}
+  pagination={{ 
+    pageSize: 10,
+    showSizeChanger: false,
+    simple: true, // Simpler pagination for mobile
+  }}
+  scroll={{ 
+    x: 1000, // Minimum width before scrolling
+    y: 600,  // Max height before vertical scroll
+  }}
+  size="middle"
+/>
+
       </Card>
 
       {selectedTask && (

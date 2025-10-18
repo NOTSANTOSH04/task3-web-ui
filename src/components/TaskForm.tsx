@@ -23,7 +23,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onTaskCreated }) => {
       // Show success message
       message.success({
         content: `Task "${result.name}" created successfully!`,
-        duration: 3,
+        duration: 15,
         icon: <CheckCircleOutlined style={{ color: '#52c41a' }} />,
       });
       
@@ -37,7 +37,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onTaskCreated }) => {
       onTaskCreated();
       
       // Hide success alert after 3 seconds
-      setTimeout(() => setShowSuccess(false), 3000);
+      setTimeout(() => setShowSuccess(false), 15000);
       
     } catch (error: any) {
       console.error('Error creating task:', error);
