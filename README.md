@@ -174,7 +174,7 @@ The table displays all tasks with columns:
 
 <img width="1865" height="943" alt="image" src="https://github.com/user-attachments/assets/33a8c5d7-7a6f-4e1c-9f3c-f3e2e33592b3" />
 
-<img width="1826" height="785" alt="image" src="https://github.com/user-attachments/assets/cd1a850c-1557-488d-bcf9-1f397895f213" />
+<img width="1863" height="939" alt="image" src="https://github.com/user-attachments/assets/b6580970-ece6-4450-b75c-d62dd28fb900" />
 
 <img width="1635" height="611" alt="image" src="https://github.com/user-attachments/assets/99ab4ed5-581b-4bd8-85ed-77a7ca8b58bc" />
 
