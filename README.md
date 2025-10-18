@@ -259,8 +259,8 @@ Click **"View"** button to open detailed modal showing:
 
 ### Delete Task
 
-<img width="1752" height="845" alt="image" src="https://github.com/user-attachments/assets/f7dd6a2f-b89a-4b63-b6b6-6f094ad76a21" />
-<img width="1832" height="914" alt="image" src="https://github.com/user-attachments/assets/c4e7e6f8-b02d-4bd8-8e34-e6f1f2adf28e" />
+<img width="1865" height="934" alt="image" src="https://github.com/user-attachments/assets/e49a6108-936d-4fdc-8d2d-b56b05967912" />
+
 
 **Safety feature:**
 - Confirmation dialog prevents accidental deletion
